@@ -1,0 +1,62 @@
+.nav-item {
+  color: var(--bs-primary) !important;
+}
+
+#mainNav .navbar-nav .nav-item .nav-link {
+  color: var(--bs-primary) !important;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.site-heading .site-heading-lower {
+  font-size: 8rem;
+  font-weight: 100;
+  line-height: 8rem;
+}
+
+.logo {
+  max-height: 50px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+#mainNav {
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+}
+
+.navbar-brand {
+  padding: 0;
+}
+
+.cta .cta-inner:before {
+  border: .25rem solid #008035;
+}
+
+.cta .cta-inner:before {
+  border: .25rem solid rgba(0,128,53,0.8);
+}
+
+.footer {
+  background-color: rgba(230,96,9,0.9);
+}
+
+@media (min-width: 992px) {
+  .page-section.mt-md-5 {
+    margin-top: 1rem;
+    margin-bottom: 11rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .page-section.mt-md-5 {
+    margin-top: 1rem;
+    margin-bottom: 8rem;
+  }
+}
+
