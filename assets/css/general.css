@@ -92,6 +92,16 @@
   }
 }
 
+#footerRow {
+  flex-direction: column;
+}
+
+@media (min-width: 576px) {
+  #footerRow {
+    flex-direction: row;
+  }
+}
+
 /* End of footer */
 
 .section-heading-lower {
@@ -136,4 +146,10 @@
 }
 
 /* Fin de servicios */
+
+.selectFont {
+  display: block;
+  font-size: 1rem;
+  font-weight: 800;
+}
 

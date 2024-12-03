@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>About us - Brand</title>
+    <title>Home - Brand</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&amp;display=swap">
@@ -12,33 +12,40 @@
     <link rel="stylesheet" href="assets/css/bs-theme-overrides.css">
     <link rel="stylesheet" href="assets/css/font.css">
     <link rel="stylesheet" href="assets/css/general.css">
+<link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet">
+ <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
 </head>
 
-<body style="background:linear-gradient(rgba(47, 23, 15, 0.65), rgba(47, 23, 15, 0.65)), url('assets/img/bg.jpg');">
-    <h1 class="text-center text-white d-none d-lg-block site-heading"><span class="text-primary site-heading-upper mb-3">A Free Bootstrap 5 Business Theme&nbsp;</span><span class="site-heading-lower">Business Casual</span></h1>
-    <nav class="navbar navbar-expand-lg py-lg-4 navbar-dark" style="color: rgb(23,49,19);background: rgb(255,255,255);">
-        <div class="container"><a class="navbar-brand text-uppercase" href="#" style="color: #e66009;font-family: 'ALGER';">&nbsp;Orígenes</a><button data-bs-toggle="collapse" class="navbar-toggler text-primary text-bg-primary d-none" data-bs-target="#navbarResponsive"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse fs-2" id="navbarResponsive">
-                <ul class="navbar-nav d-none ms-auto" style="background: #ffffff;">
-                    <li class="nav-item" style="color: rgb(7,13,6);"><a class="nav-link" href="index.html">INICIO</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about.html">SOBRE NOSOTROS</a></li>
-                    <li class="nav-item"><a class="nav-link" href="products.html" style="color: rgba(104,224,30,0.7);">pRODUCTOS</a></li>
-                    <li class="nav-item"><a class="nav-link" href="store.html">tIENDA</a></li>
-                </ul>
+<body style="background: linear-gradient(rgba(15,47,16,0.65), rgba(15,47,24,0.65)), url(&quot;assets/img/muneeb-syed-x9NfeD3FpsE-unsplash.jpg&quot;);">
+    <nav class="navbar filters">
+        <div class="container">
+            <div class="filter-item">
+                <h3>Brands</h3>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-5"><label class="form-check-label" for="formCheck-5">Samsung</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-6"><label class="form-check-label" for="formCheck-6">Apple</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-7"><label class="form-check-label" for="formCheck-7">HTC</label></div>
+            </div>
+            <div class="filter-item">
+                <h3>OS</h3>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-8"><label class="form-check-label" for="formCheck-8">Android</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-9"><label class="form-check-label" for="formCheck-9">iOS</label></div>
             </div>
         </div>
     </nav>
-    <section class="page-section about-heading">
-        <div class="container"><img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="assets/img/about.jpg">
-            <div class="about-heading-content">
-                <div class="row">
-                    <div class="col-lg-10 col-xl-9 mx-auto">
-                        <div class="bg-faded rounded p-5">
-                            <h2 class="section-heading mb-4"><span class="section-heading-upper">Strong Coffee, Strong Roots</span><span class="section-heading-lower">&nbsp;About Our Cafe</span></h2>
-                            <p>Founded in 1987 by the Hernandez brothers, our establishment has been serving up rich coffee sourced from artisan farmers in various regions of South and Central America. We are dedicated to travelling the world, finding the best coffee, and bringing back to you here in our cafe.</p>
-                            <p class="mb-0"><span>We guarantee that you will fall in&nbsp;</span><span>lust</span><span>&nbsp;with our decadent blends the moment you walk inside until you finish your last sip. Join us for your daily routine, an outing with friends, or simply just to enjoy some alone time.</span></p>
+    <h1 class="text-center text-white d-none d-lg-block site-heading"><span class="site-heading-upper mb-3" style="color: rgb(255,255,255);">Nuestras</span><span class="site-heading-lower" style="color: var(--bs-primary);font-family: 'ALGER';">plantas</span></h1>
+    <section class="page-section cta" style="background: rgba(255,255,255,0.7);">
+        <div class="container">
+            <div class="row" style="background: #ffffff;">
+                <div class="col-3">
+                    <div id="todosFiltros">
+                        <div class="filter-item">
+                            <h2 class="selectFont">FAMILIA</h2>
+                            <div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" for="formCheck-1">Label</label></div>
                         </div>
                     </div>
+                </div>
+                <div class="col">
+                    <div id="tablaProductos"></div>
                 </div>
             </div>
         </div>
