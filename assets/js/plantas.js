@@ -1,198 +1,243 @@
+document.addEventListener('DOMContentLoaded', async () => {
 
+    // Variables de la página
+    const inputBuscar = document.getElementById('buscarPlantaInput');
+    let tablaPlantas;
 
-
-
-
-
-
-
-
-
-// Escuchar cuando la página esté completamente cargada
-document.addEventListener('DOMContentLoaded', async function() {
-
-    // Variables de la pagina
-    var tablaPlantas;
-    var inputBuscar = document.getElementById('buscarPlantaInput'); 
-
-
-    // #region Crear tabla
-    
+    // Cargar datos CSV y crear la tabla
     async function cargarCSVYCrearTabla() {
         try {
-            const respuesta = await fetch('assets/data/plantas.csv');
-            const textoCSV = await respuesta.text();
-            console.log(`plantas encontradas`, textoCSV);
-
-            // Parse data
-            const resultados = await new Promise((resolve, reject) => {
-                Papa.parse(textoCSV, {
-                    complete: (resultados) => resolve(resultados),
-                    error: (error) => reject(error),
-                    header: true,
-                });
-            });
-
-            console.log("data encontrada", resultados.data);
-
-            // Filter out empty or invalid rows
-            const dataFiltrada = resultados.data.filter(row => {
-                // Check if the row has at least one non-empty value (you can adjust the logic as needed)
-                return Object.values(row).some(value => value.trim() !== '');
-            });
-
-            // Create the table
-            tablaPlantas = new Tabulator("#plantasTabla", {
-                data: dataFiltrada,  // Use the filtered data
-                layout: "fitColumns",
-                responsiveLayout: "hide",
-                pagination: "local",
-                paginationSize: 10,
-                movableColumns: true,
-                resizableRows: true,
-                columns: [
-                    { title: "Familia", field: "Familia" },
-                    { title: "Género", field: "Genero" },
-                    { title: "Nombre Científico", field: "Nombre Cientifico" },
-                    { title: "Nombre Común", field: "Nombre comun" },
-                    { title: "Categoría", field: "Categoria" },
-                    { title: "Variedades", field: "Variedades", visible: false },
-                    { title: "Tamaño", field: "Tamano" },
-                    { title: "Exposición al Sol", field: "Exposicion al sol" },
-                    { title: "Precio por Unidad (S/.)", field: "Precio por Unidad (S/)", visible: false },
-                    { title: "Precio por Docena (S/.)", field: "Precio por Docena  (S/)", visible: false },
-                    { title: "Precio por Ciento (S/.)", field: "Precio por Ciento  (S/)", visible: false },
-                    { title: "Precio por Millar (S/.)", field: "Precio por Millar  (S/)", visible: false },
-                    { title: "Estado de Stock", field: "Estado de Stock" },
-                    { title: "Observación", field: "Observacion", visible: false }
-                ]
-            });
-
-             // Wait for table initialization (table built event)
-            tablaPlantas.on("tableBuilt", function() {
-                // This event fires after the table has finished rendering
-                console.log("Tabla completamente cargada", tablaPlantas.getData());
-
-                // Continue with your next steps, e.g. calling createFilterElements()
-                createFilterElements();
-            });
-
+            const datosCSV = await obtenerDatosCSV('assets/data/plantas.csv');
+            const datosFiltrados = filtrarDatos(datosCSV);
+            const datosDivididos = transformarColumnasEnListas(datosFiltrados);
+            tablaPlantas = crearTabla(datosDivididos);
+            await inicializarTabla();
         } catch (error) {
             console.error('Error al cargar el archivo CSV:', error);
         }
-    
-    };
-    
-    
-    // #endregion
-    
-    // #region Crear filtros
-    inputBuscar.addEventListener('input', function() {
-        var query = inputBuscar.value.trim(); // Obtener el texto del input y eliminar espacios al inicio y al final
-    
-        // Limpiar todos los filtros anteriores
-        tablaPlantas.clearFilter();
-    
-        console.log("tablaPlantas", tablaPlantas.getData());
+    }
 
-        tablaPlantas.addFilter(function(data) {
-            // Realizar la búsqueda global comparando el texto con los valores de todas las columnas
-            return Object.values(data).some(value => 
-                String(value).toLowerCase().includes(query.toLowerCase())
-            );
+    // Obtener datos CSV
+    async function obtenerDatosCSV(url) {
+        const respuesta = await fetch(url);
+        const textoCSV = await respuesta.text();
+        return parseCSV(textoCSV);
+    }
+
+    // Parsear CSV con PapaParse
+    function parseCSV(textoCSV) {
+        return new Promise((resolve, reject) => {
+            Papa.parse(textoCSV, {
+                complete: (resultados) => resolve(resultados.data),
+                error: reject,
+                header: true,
+            });
         });
+    }
 
+    // Filtrar filas vacías o inválidas
+    function filtrarDatos(datos) {
+        return datos.filter(row => Object.values(row).some(value => value.trim() !== ''));
+    }
+
+    // Crear la tabla de Tabulator
+    function crearTabla(datos) {
+        return new Tabulator("#plantasTabla", {
+            data: datos,
+            layout: "fitColumns",
+            responsiveLayout: "hide",
+            pagination: "local",
+            paginationSize: 10,
+            movableColumns: true,
+            resizableRows: true,
+            columns: obtenerColumnasTabla(),
+        });
+    }
+
+    // Definir columnas para la tabla
+    function obtenerColumnasTabla() {
+        return [
+            { title: "Familia", field: "Familia" },
+            { title: "Género", field: "Genero" },
+            { title: "Nombre Científico", field: "Nombre Cientifico" },
+            { title: "Nombre Común", field: "Nombre comun" },
+            { title: "Categoría", field: "Categoria" },
+            { title: "Variedades", field: "Variedades", visible: false },
+            { title: "Tamaño", field: "Tamano" },
+            { title: "Hábitat", field: "Habitat",
+                formatter: function(cell) {
+                    const values = cell.getValue(); // Obtener el valor de la celda (que es ahora un array)
+                    const ul = document.createElement('ul'); // Crear una lista desordenada (ul)
+            
+                    values.forEach(value => {
+                        const li = document.createElement('li'); // Crear un item de lista (li)
+                        li.textContent = value; // Asignar el valor del item
+                        ul.appendChild(li); // Añadir el item a la lista
+                    });
+            
+                    return ul; // Devolver la lista para renderizarla
+                }
+             },
+            { title: "Precio por Unidad (S/.)", field: "Precio por Unidad (S/)", visible: false },
+            { title: "Precio por Docena (S/.)", field: "Precio por Docena  (S/)", visible: false },
+            { title: "Precio por Ciento (S/.)", field: "Precio por Ciento  (S/)", visible: false },
+            { title: "Precio por Millar (S/.)", field: "Precio por Millar  (S/)", visible: false },
+            { title: "Estado de Stock", field: "Estado de Stock" },
+            { title: "Observación", field: "Observacion", visible: false },
+        ];
+    }
+
+    // Transformar la columna "Hábitat" en una lista
+    function transformarColumnasEnListas(datos) {
+        return datos.map(row => {
+            // Convertir "Habitat" en un array de valores separados por "/"
+            if (row.Habitat) {
+                row.Habitat = row.Habitat.split('/').map(item => item.trim());
+            }
+            return row;
+        });
+    }
+
+    // Inicializar la tabla y configurar eventos
+    async function inicializarTabla() {
+        tablaPlantas.on("tableBuilt", () => {
+            crearFiltros();
+        });
+    }
+
+    // Filtrar por texto de búsqueda
+    inputBuscar.addEventListener('input', () => {
+        const query = inputBuscar.value.trim().toLowerCase();
+        aplicarFiltroBusqueda(query);
     });
 
-    // Funcion que crea filtros basados en las columnas vacias
-    function createFilterElements() {
+    // Aplicar filtro de búsqueda a todas las columnas
+    function aplicarFiltroBusqueda(query) {
+        tablaPlantas.clearFilter();
+        tablaPlantas.addFilter(data => {
+            return Object.values(data).some(value =>
+                String(value).toLowerCase().includes(query)
+            );
+        });
+    }
+
+    // Crear filtros basados en columnas específicas
+    function crearFiltros() {
+        const columnasFiltro = ["Familia", "Genero", "Habitat"];
+        const columnasFiltradas = obtenerColumnasFiltradas(columnasFiltro);
+
         const filterContainer = document.getElementById('filtrosChecks');
-        filterContainer.innerHTML = ''; // Clear any existing filters
+        filterContainer.innerHTML = ''; // Limpiar filtros existentes
 
-        // Get the list of visible columns
-        console.log("tabla de plantas", tablaPlantas.getData());
-        const todasColumnas =tablaPlantas.getColumns();
-        const visibleColumns = todasColumnas.filter(col => col.isVisible());
-        console.log("columnas visibles",visibleColumns)
-
-        // Iterate through each visible column
-        visibleColumns.forEach((column, index) => {
-            const columnTitle = column.getDefinition().title;
-            const columnField = column.getField();
-
-            // Create a container for the filter
-            const filterDiv = document.createElement('div');
-
-            // Create the heading for the filter
-            const heading = document.createElement('h1');
-            heading.classList.add('site-heading-upper');
-            heading.textContent = columnTitle;
-
-            // Append the heading to the filter container
-            filterDiv.appendChild(heading);
-
-            // Create a list of distinct values for the checkboxes
-            const uniqueValues = [...new Set(tablaPlantas.getData().map(row => row[columnField]))];
-
-            // Create a checkbox for each unique value in the column
-            uniqueValues.forEach((value, index) => {
-                const checkboxWrapper = document.createElement('div');
-                checkboxWrapper.classList.add('form-check');
-
-                // Create checkbox input
-                const checkbox = document.createElement('input');
-                checkbox.id = `formCheck-${columnField}-${index}`;
-                checkbox.classList.add('form-check-input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = true;  // Initially checked
-
-                // Create checkbox label
-                const label = document.createElement('label');
-                label.classList.add('form-check-label');
-                label.setAttribute('for', checkbox.id);
-                label.textContent = value;
-
-                // Append checkbox and label to wrapper
-                checkboxWrapper.appendChild(checkbox);
-                checkboxWrapper.appendChild(label);
-
-                // Append the wrapper to the filter div
-                filterDiv.appendChild(checkboxWrapper);
-
-                // Add event listener to update filter when checkbox is toggled
-                checkbox.addEventListener('change', function() {
-                    updateColumnFilter(columnField, uniqueValues);
-                });
-            });
-
-            // Append the filter div to the filter container
-            filterContainer.appendChild(filterDiv);
+        columnasFiltradas.forEach((columna, index) => {
+            const filtroDiv = crearFiltroPorColumna(columna, index);
+            filterContainer.appendChild(filtroDiv);
         });
     }
 
-    // Function to update the filter for a specific column based on checked checkboxes
-    function updateColumnFilter(columnField, uniqueValues) {
-        const checkboxes = document.querySelectorAll(`#filtrosChecks input[type="checkbox"]`);
+    // Obtener columnas filtradas basadas en una lista
+    function obtenerColumnasFiltradas(columnasFiltro) {
+        const todasColumnas = tablaPlantas.getColumns();
+        return todasColumnas.filter(col => columnasFiltro.includes(col.getField()));
+    }
+
+    // Crear un filtro para una columna
+    function crearFiltroPorColumna(columna, index) {
+
+        // Crear titulo de filtro
+        const filterDiv = document.createElement('div');
+        const heading = document.createElement('h1');
+        heading.classList.add('site-heading-upper');
+        heading.textContent = columna.getDefinition().title;
+        filterDiv.appendChild(heading);
+
+        // Obtener valores unicos de la columna
+        const columnaNombre = columna.getField();
+        const uniqueValues = obtenerValoresUnicos(columnaNombre);
+
+        // Crear checkbox para cada valor unico
+        uniqueValues.forEach((value, idx) => {
+            const checkboxWrapper = crearCheckbox(value, columnaNombre, idx);
+            filterDiv.appendChild(checkboxWrapper);
+        });
+
+        return filterDiv;
+    }
+
+   // Obtener valores únicos en las columnas. Cada elemento ya es un array.
+    function obtenerValoresUnicos(columnaNombre) {
+        return [...new Set(
+            tablaPlantas.getData()
+                .map(row => row[columnaNombre])         // Obtener la columna que ya es un array
+                .flat()                                  // Aplanar los arrays (hacer una lista de todos los elementos de las listas)
+                .map(value => value.trim())              // Eliminar los espacios en blanco
+        )];
+    }
         
-        // Get the selected values from the checkboxes
-        const selectedValues = [];
-        checkboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                const label = checkbox.nextElementSibling;
-                selectedValues.push(label.textContent);
-            }
-        });
 
-        // Apply the filter to the Tabulator table based on selected values
-        tablaPlantas.setFilter(columnField, "in", selectedValues);
+    // Crear un checkbox para un valor único
+    function crearCheckbox(value, columnaNombre, index) {
+        const checkboxWrapper = document.createElement('div');
+        checkboxWrapper.id = `listaChecks-${columnaNombre}`;
+        checkboxWrapper.classList.add('form-check');
+
+        // Crear checkbox
+        const checkbox = document.createElement('input');
+        checkbox.id = `formCheck-${columnaNombre}-${index}`;
+        checkbox.classList.add('form-check-input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = true;
+
+        // Crear descripcion de checkbox
+        const label = document.createElement('label');
+        label.classList.add('form-check-label');
+        label.setAttribute('for', checkbox.id);
+        label.textContent = value;
+
+        // Añadir a html
+        checkboxWrapper.appendChild(checkbox);
+        checkboxWrapper.appendChild(label);
+
+        // Añadir evento al check
+        checkbox.addEventListener('change', () => actualizarFiltroColumna(columnaNombre));
+
+        return checkboxWrapper;
     }
 
-    // #endregion
+    // Función para actualizar el filtro de una columna específica
+    function actualizarFiltroColumna(columnaNombre) {
+        const filterFunction = function(data) {
+            return customFilter(data, columnaNombre); // Llamar al filtro personalizado para la columna
+        };
+        
+        // Aplicar el filtro a la columna específica
+        tablaPlantas.setFilter(filtroPersonalizado,{columnaNombre:columnaNombre});
+    }
+
+    // Filtro personalizado para comparar si alguno de los valores seleccionados está presente en la columna (array)
+    function filtroPersonalizado (data, parametros){
+        //data - the data for the row being filtered
+        //parametros - params object passed to the filter
+
+        const valueArray = data[parametros.columnaNombre]; // El valor de la columna es un array (por ejemplo, ["forest", "river"])
+        const selectedValues = obtenerValoresSeleccionados(parametros.columnaNombre); // Obtener los valores seleccionados de los checkboxes
+
+        // Comprobar si al menos uno de los valores seleccionados está presente en el array de la columna
+        return selectedValues.some(val => valueArray.includes(val));
 
 
-    // Llamar a la función para cargar el CSV y crear la tabla
+    }
+
+
+    // Obtener los valores seleccionados de los checkboxes
+    function obtenerValoresSeleccionados(columnaNombre) {
+        const checkboxes = document.querySelectorAll(`#listaChecks-${columnaNombre} input[type="checkbox"]`);
+        return Array.from(checkboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.nextElementSibling.textContent);
+    }
+
+    // Llamar a la función para cargar los datos y crear la tabla
     await cargarCSVYCrearTabla();
-
-
 
 });
