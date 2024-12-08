@@ -12,40 +12,48 @@
     <link rel="stylesheet" href="assets/css/bs-theme-overrides.css">
     <link rel="stylesheet" href="assets/css/font.css">
     <link rel="stylesheet" href="assets/css/general.css">
+<!-- Parse csv -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+<!-- Tabulator-->
 <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet">
  <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+
+<!-- JS de pagina -->
+<script src="assets/js/plantas.js" type="module" ></script>
 </head>
 
-<body style="background: linear-gradient(rgba(15,47,16,0.65), rgba(15,47,24,0.65)), url(&quot;assets/img/muneeb-syed-x9NfeD3FpsE-unsplash.jpg&quot;);">
-    <nav class="navbar filters">
-        <div class="container">
-            <div class="filter-item">
-                <h3>Brands</h3>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-5"><label class="form-check-label" for="formCheck-5">Samsung</label></div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-6"><label class="form-check-label" for="formCheck-6">Apple</label></div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-7"><label class="form-check-label" for="formCheck-7">HTC</label></div>
-            </div>
-            <div class="filter-item">
-                <h3>OS</h3>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-8"><label class="form-check-label" for="formCheck-8">Android</label></div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-9"><label class="form-check-label" for="formCheck-9">iOS</label></div>
+<body style="background: linear-gradient(rgba(15,47,16,0.65), rgba(15,47,24,0.65)), url(&quot;assets/img/photo-1446071103084-c257b5f70672-2.jpg&quot;);">
+    <nav class="navbar navbar-expand-lg fixed-top bg-body clean-navbar" id="mainNav">
+        <div class="container"><a class="navbar-brand text-uppercase" href="index.html" style="color: #e66009;font-family: 'ALGER';"><img class="logo" src="assets/img/Logo%20Facebook.png">&nbsp;Orígenes</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon" style="color: var(--bs-primary);"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1" style="background: #ffffff;border-color: var(--bs-primary);">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="nosotros.html">Sobre nosotros</a></li>
+                    <li class="nav-item d-none"><a class="nav-link" href="features.html">plantas</a></li>
+                    <li class="nav-item"><a class="btn btn-primary" role="button" href=" https://wa.me/51921213628" target="_blank" style="color: rgb(255,255,255);background: var(--bs-primary);font-family: 'Raleway' !important;font-weight: 800;">CONTÁCTANOS</a></li>
+                </ul>
             </div>
         </div>
     </nav>
-    <h1 class="text-center text-white d-none d-lg-block site-heading"><span class="site-heading-upper mb-3" style="color: rgb(255,255,255);">Nuestras</span><span class="site-heading-lower" style="color: var(--bs-primary);font-family: 'ALGER';">plantas</span></h1>
+    <h1 class="text-uppercase text-center site-heading"><span class="site-heading-upper" style="color: rgb(255,255,255);font-size: 2rem;">Nuestras</span><span class="site-heading-lower" style="color: var(--bs-primary);font-family: 'ALGER';font-size: 4rem;">Plantas</span></h1>
     <section class="page-section cta" style="background: rgba(255,255,255,0.7);">
         <div class="container">
-            <div class="row" style="background: #ffffff;">
-                <div class="col-3">
-                    <div id="todosFiltros">
-                        <div class="filter-item">
-                            <h2 class="selectFont">FAMILIA</h2>
-                            <div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" for="formCheck-1">Label</label></div>
+            <div class="row" style="background: #ffffff;gap: 0;">
+                <div class="col-md-3 mx-auto" style="border-right: 1px solid rgba(12,7,7,0.5) ;">
+                    <div id="filtros">
+                        <div>
+                            <h1 class="site-heading-upper">Buscar</h1><input type="text" id="buscarPlantaInput" style="border-width: 2px;border-color: rgba(12,7,7,0.5);border-right-width: 1px;border-right-color: rgba(12,7,7,0.5);">
+                        </div>
+                        <div class="d-flex flex-column" id="filtrosChecks" style="gap: 1.5rem;">
+                            <div>
+                                <h1 class="site-heading-upper">Familia</h1>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-1"><label class="form-check-label" for="formCheck-1">Label</label></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div id="tablaProductos"></div>
+                <div class="col-md-8 mx-auto" style="margin-top: 1rem;margin-bottom: 1rem;">
+                    <div id="plantasTabla"></div>
                 </div>
             </div>
         </div>

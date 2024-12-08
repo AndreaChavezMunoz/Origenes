@@ -1,5 +1,6 @@
 .nav-item {
   color: var(--bs-primary) !important;
+  text-align: center;
 }
 
 #mainNav .navbar-nav .nav-item .nav-link {
@@ -147,9 +148,23 @@
 
 /* Fin de servicios */
 
-.selectFont {
+/* Filtro de plantas */
+
+.site-heading-upper {
   display: block;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 800;
+  text-transform: uppercase;
+}
+
+#filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 1rem;
+}
+
+input {
+  width: 100%;
 }
 
